@@ -2,6 +2,7 @@
 
 namespace Hanoivip\PaymentMethodTripay;
 
+use Illuminate\Support\Facades\Log;
 use Mervick\CurlHelper;
 
 class TripayApi implements IHelper
@@ -67,7 +68,9 @@ class TripayApi implements IHelper
     public function create($merchantRef, $channel, $order)
     {
         $url = self::END_POINT[$this->sandbox] . "/transaction/create";
-        $amount = $order['item_price'];
+        $amount = 10000;
+        Log::error("$this->merchantId $merchantRef $amount  $this->privateKey");
+        Log::error(hash_hmac('sha256', $this->merchantId.$merchantRef.$amount, $this->privateKey));
         $params = [
             'method' => $channel['code'],
             'merchant_ref' => $merchantRef,
@@ -75,7 +78,16 @@ class TripayApi implements IHelper
             'customer_name' => 'Admin',
             'customer_email' => 'game.oh.vn@gmail.com',
             'customer_phone' => '+84365362826',
-            'order_items' => [],
+            'order_items' => [
+                [
+                    'sku' => $order['item'],
+                    'name' => $order['item'],
+                    'price' => $amount,
+                    'quantity' => 1,
+                    'product_url' => '#',
+                    'image_url' => '#'
+                ]
+            ],
             //'callback_url' => route('tripay.callback'),
             //'return_url' => route('tripay.return'),
             //expired_time
@@ -90,6 +102,10 @@ class TripayApi implements IHelper
             $response['data']['success'])
         {
             return $response['data']['data'];
+        }
+        else
+        {
+            Log::error("Tripay create transaction error: " . print_r($response['data'], true));
         }
     }
 

@@ -14,7 +14,7 @@ class TripayResult implements IPaymentResult
      * @param array $detail Tripay transaction detail
      * https://tripay.co.id/developer?tab=merchant-transactions
      */
-    function __construct($tripayTrans, $instructions)
+    function __construct($tripayTrans, $instructions = null)
     {
         $this->detail = $tripayTrans;
         $this->channelInstruct = $instructions;
