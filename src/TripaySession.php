@@ -21,7 +21,7 @@ class TripaySession implements IPaymentSession
     
     public function getGuide()
     {
-        return __('hanoivip::tripay.guide');
+        return __('tripay::tripay.guide');
     }
     
     public function getData()

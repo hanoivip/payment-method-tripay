@@ -57,24 +57,24 @@ class TripayMethod implements IPaymentMethod
         //Log::error(print_r($channels, true));
         if (!isset($params['channel']) || empty($channels))
         {
-            return new TripayFailure($trans, __('hanoivip::tripay.failure.missing-params'));
+            return new TripayFailure($trans, __('tripay::tripay.failure.timeout'));
         }
         $log = TripayTransaction::where('trans', $trans->trans_id)->first();
         $channel = $params['channel'];
         $channelDetail = $this->getChannelDetail($channels, $channel);
         if (empty($channelDetail))
         {
-            return new TripayFailure($trans, __('hanoivip::tripay.failure.channel-invalid'));
+            return new TripayFailure($trans, __('tripay::tripay.failure.error'));
         }
         try {
             $order = $trans->order;
             $orderDetail = IapFacade::detail($order);
             $this->helper->setConfig($this->config);
             $tripayTrans = $this->helper->create($trans->trans_id, $channelDetail, $orderDetail);
-            Log::error(print_r($tripayTrans, true));
+            // Log::error(print_r($tripayTrans, true));
             if (empty($tripayTrans))
             {
-                return new TripayFailure($trans, __('hanoivip::tripay.failure.request-invalid'));
+                return new TripayFailure($trans, __('tripay::tripay.failure.error'));
             }
             // save
             $log->tripay = json_encode($tripayTrans);
@@ -83,13 +83,13 @@ class TripayMethod implements IPaymentMethod
             //Log::error(print_r($instruct, true));
             if (empty($instruct))
             {
-                return new TripayFailure($trans, __('hanoivip::tripay.failure.instruct-invalid'));
+                return new TripayFailure($trans, __('tripay::tripay.failure.error'));
             }
             return new TripayResult($tripayTrans, $instruct);
         } catch (Exception $ex) {
             Log::error("Tripay create transaction error: " . $ex->getMessage());
             Log::error(">>>>>>>> " . $ex->getTraceAsString());
-            return new TripayFailure($trans, __('hanoivip::tripay.exception'));
+            return new TripayFailure($trans, __('tripay::tripay.exception'));
         }
     }
 
@@ -98,7 +98,7 @@ class TripayMethod implements IPaymentMethod
         $log = TripayTransaction::where('trans', $trans->trans_id)->first();
         if (empty($log))
         {
-            return new TripayFailure($trans, __('hanoivip::tripay.failure.invalid-trans'));
+            return new TripayFailure($trans, __('tripay::tripay.failure.error'));
         }
         try
         {
