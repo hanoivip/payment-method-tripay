@@ -69,8 +69,8 @@ class TripayApi implements IHelper
     {
         $url = self::END_POINT[$this->sandbox] . "/transaction/create";
         $amount = 10000;
-        Log::error("$this->merchantId $merchantRef $amount  $this->privateKey");
-        Log::error(hash_hmac('sha256', $this->merchantId.$merchantRef.$amount, $this->privateKey));
+        //Log::error("$this->merchantId $merchantRef $amount  $this->privateKey");
+        //Log::error(hash_hmac('sha256', $this->merchantId.$merchantRef.$amount, $this->privateKey));
         $params = [
             'method' => $channel['code'],
             'merchant_ref' => $merchantRef,
