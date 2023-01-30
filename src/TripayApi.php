@@ -4,6 +4,7 @@ namespace Hanoivip\PaymentMethodTripay;
 
 use Illuminate\Support\Facades\Log;
 use Mervick\CurlHelper;
+use AmrShawky\LaravelCurrency\Facade\Currency;
 
 class TripayApi implements IHelper
 {
@@ -68,9 +69,14 @@ class TripayApi implements IHelper
     public function create($merchantRef, $channel, $order)
     {
         $url = self::END_POINT[$this->sandbox] . "/transaction/create";
-        $amount = 30000;
-        //Log::error("$this->merchantId $merchantRef $amount  $this->privateKey");
-        //Log::error(hash_hmac('sha256', $this->merchantId.$merchantRef.$amount, $this->privateKey));
+        $amount = Currency::convert()
+                    ->from('USD')
+                    ->to('IDR')
+                    ->amount($order['item_price'])
+                    ->get();
+        $amount = intval($amount);
+        Log::error("$this->merchantId $merchantRef $amount  $this->privateKey");
+        Log::error(hash_hmac('sha256', $this->merchantId.$merchantRef.$amount, $this->privateKey));
         $params = [
             'method' => $channel['code'],
             'merchant_ref' => $merchantRef,
