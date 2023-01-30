@@ -21,9 +21,13 @@ class TripayResult implements IPaymentResult
     }
     public function getDetail()
     {
+        $instructs = [];
         if (isset($this->detail['instructions']))
-            return $this->detail['instructions'];
-        return $this->channelInstruct;
+            $instructs = $this->detail['instructions'];
+        else
+            $instructs = $this->channelInstruct;
+        //$instructs['amount'] = 'Amount IDR: ' . $this->getAmount();
+        return ['guide' => $instructs, 'amount' => $this->getAmount()];
     }
 
     public function toArray()
