@@ -18,7 +18,7 @@ class TripayController extends BaseController
     
     private function getSetting()
     {
-        if (App::environment() === 'production')
+        if (App::environment() == 'production')
         {
             return config('payment.methods.tripay');
         }
@@ -32,7 +32,7 @@ class TripayController extends BaseController
     {
         $callbackSignature = $request->server('HTTP_X_CALLBACK_SIGNATURE');
         $json = $request->getContent();
-        $privateKey = $this->getSetting()['private_key'];
+        $privateKey = $this->getSetting()['setting']['private_key'];
         $signature = hash_hmac('sha256', $json, $privateKey);
         
         if ($signature !== (string) $callbackSignature) {
