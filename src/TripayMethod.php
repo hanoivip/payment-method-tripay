@@ -57,14 +57,14 @@ class TripayMethod implements IPaymentMethod
         //Log::error(print_r($channels, true));
         if (!isset($params['channel']) || empty($channels))
         {
-            return new TripayFailure($trans, __('tripay::tripay.failure.timeout'));
+            return new TripayFailure($trans, __('tripay::tripay.timeout'));
         }
         $log = TripayTransaction::where('trans', $trans->trans_id)->first();
         $channel = $params['channel'];
         $channelDetail = $this->getChannelDetail($channels, $channel);
         if (empty($channelDetail))
         {
-            return new TripayFailure($trans, __('tripay::tripay.failure.error'));
+            return new TripayFailure($trans, __('tripay::tripay.error'));
         }
         try {
             $order = $trans->order;
@@ -74,7 +74,7 @@ class TripayMethod implements IPaymentMethod
             // Log::error(print_r($tripayTrans, true));
             if (empty($tripayTrans))
             {
-                return new TripayFailure($trans, __('tripay::tripay.failure.error'));
+                return new TripayFailure($trans, __('tripay::tripay.error'));
             }
             // save
             $log->tripay = json_encode($tripayTrans);
@@ -83,7 +83,7 @@ class TripayMethod implements IPaymentMethod
             //Log::error(print_r($instruct, true));
             if (empty($instruct))
             {
-                return new TripayFailure($trans, __('tripay::tripay.failure.error'));
+                return new TripayFailure($trans, __('tripay::tripay.error'));
             }
             return new TripayResult($tripayTrans, $instruct);
         } catch (Exception $ex) {
