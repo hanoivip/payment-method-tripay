@@ -104,16 +104,19 @@ class TripayMethod implements IPaymentMethod
         {
             $oldDetail = json_decode($log->tripay, true);
             $detail = $this->helper->fetch($oldDetail['reference']);
-            $log->tripay = json_encode($detail);
-            $log->save();
-            return new TripayResult($detail);
+            if (!empty($detail))
+            {
+                $log->tripay = json_encode($detail);
+                $log->save();
+                return new TripayResult($detail);
+            }
         }
         catch (Exception $ex)
         {
             Log::error("Tripay query transaction exception " . $ex->getMessage());
-            $instruct = $this->helper->instruct($oldDetail['payment_method']);
-            return new TripayResult($oldDetail, $instruct);
         }
+        $instruct = $this->helper->instruct($oldDetail['payment_method']);
+        return new TripayResult($oldDetail, $instruct);
     }
 
     public function config($cfg)
