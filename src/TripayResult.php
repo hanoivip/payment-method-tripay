@@ -9,6 +9,7 @@ class TripayResult implements IPaymentResult
     private $detail;
     
     private $channelInstruct;
+    
     /**
      * 
      * @param array $detail Tripay transaction detail
@@ -22,12 +23,17 @@ class TripayResult implements IPaymentResult
     public function getDetail()
     {
         $instructs = [];
+        $qr = '';
         if (isset($this->detail['instructions']))
+        {
             $instructs = $this->detail['instructions'];
+            if (isset($this->detail['qr_url']) && 
+                !empty($this->detail['qr_url']))
+                $qr = $this->detail['qr_url'];
+        }
         else
             $instructs = $this->channelInstruct;
-        //$instructs['amount'] = 'Amount IDR: ' . $this->getAmount();
-        return ['guide' => $instructs, 'amount' => $this->getAmount()];
+        return ['guide' => $instructs, 'amount' => $this->getAmount(), 'qr' => $qr];
     }
 
     public function toArray()
