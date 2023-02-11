@@ -69,11 +69,14 @@ class TripayApi implements IHelper
     public function create($merchantRef, $channel, $order)
     {
         $url = self::END_POINT[$this->sandbox] . "/transaction/create";
+        /*
         $amount = Currency::convert()
                     ->from('USD')
                     ->to('IDR')
                     ->amount($order['item_price'])
                     ->get();
+                    */
+        $amount = $order['item_price'];//TODO: currency? 
         $amount = intval($amount);
         Log::error("$this->merchantId $merchantRef $amount  $this->privateKey");
         Log::error(hash_hmac('sha256', $this->merchantId.$merchantRef.$amount, $this->privateKey));
@@ -104,10 +107,16 @@ class TripayApi implements IHelper
         ->setHeaders(['Authorization' => 'Bearer ' . $this->apiKey])
         ->exec();
         if ($response['status'] == 200 &&
-            !empty($response['data']) &&
-            $response['data']['success'])
+            !empty($response['data']))
         {
-            return $response['data']['data'];
+            if ($response['data']['success'])        
+            {
+                return $response['data']['data'];
+            }
+            else
+            {
+                return $response['data']['message'];
+            }
         }
         else
         {

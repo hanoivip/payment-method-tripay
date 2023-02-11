@@ -76,6 +76,10 @@ class TripayMethod implements IPaymentMethod
             {
                 return new TripayFailure($trans, __('tripay::tripay.error'));
             }
+            if (gettype($tripayTrans) == 'string')
+            {
+                return new TripayFailure($trans, $tripayTrans);
+            }
             // save
             $log->tripay = json_encode($tripayTrans);
             $log->save();
