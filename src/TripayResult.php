@@ -72,5 +72,11 @@ class TripayResult implements IPaymentResult
     {
         return $this->detail['amount'];
     }
+    
+    public function getCurrency()
+    {
+        return 'IDR';
+    }
+
 
 }

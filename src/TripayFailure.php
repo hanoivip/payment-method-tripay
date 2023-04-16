@@ -61,5 +61,11 @@ class TripayFailure implements IPaymentResult
     {
         return 0;
     }
+    
+    public function getCurrency()
+    {
+        return 'IDR';
+    }
+
 
 }
