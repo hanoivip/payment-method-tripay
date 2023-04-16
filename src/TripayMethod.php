@@ -128,5 +128,11 @@ class TripayMethod implements IPaymentMethod
         //Log::debug("Tripay cfg " . print_r($cfg, true) );
         $this->config = $cfg;
         $this->helper->setConfig($cfg);
-    }    
+    }
+    
+    public function validate($params)
+    {
+        return true;
+    }
+    
 }
